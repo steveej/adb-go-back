@@ -1,0 +1,4 @@
+#!/bin/bash -e
+
+[[ ! -e bin ]] && mkdir bin
+go build -o bin/adbgb cmd/*.go
