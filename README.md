@@ -28,24 +28,15 @@ $ ./bin/adbgb --help
 
 ### Backup
 1. Connect your device and make sure adb is working
-1. Dump applist
-    ```
-    $ ./bin/adbdb dump -o /tmp/apps.yaml
-    ```
+1. `$ ./bin/adbdb dump -o /tmp/apps.yaml`
 1. Edit /tmp/apps.yaml. keep only the entries you want to backup
-1. Backup!
-    ```
-    $ ./bin/adbdb backup -i /tmp/apps.yaml -o apps.bkp
-    ```
+1. `$ ./bin/adbdb backup -i /tmp/apps.yaml -o apps.bkp`
 1. At this point your device should display a message and ask for backup
    confirmation
 
 ### Restore
 1. Connect your device and make sure adb is working
-1. Restore
-    ```
-    $ ./bin/adbdb restore -i apps.bkp
-    ```
+1. `$ ./bin/adbdb restore -i apps.bkp`
 1. At this point your device should display a message and ask for restore
    confirmation
 
