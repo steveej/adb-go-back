@@ -65,7 +65,7 @@ func LoadYaml(file string) (Apps, error) {
 
 func GetUserApps() (Apps, error) {
 	m := make(Apps, 0)
-	cmd := exec.Command("adb", "shell", "pm list packages -3 -f | sed -e 's/package://'")
+	cmd := exec.Command("adb", "shell", "pm list packages -3 -f")
 	var out bytes.Buffer
 	cmd.Stdout = &out
 	err := cmd.Run()
@@ -75,6 +75,8 @@ func GetUserApps() (Apps, error) {
 
 	lines := strings.Split(out.String(), "\n")
 	for _, line := range lines {
+		line = strings.Replace(line, "package:", "", -1)
+		fmt.Println(line)
 		re := regexp.MustCompile("(.*)=(.*)\r")
 		lineRegex := re.FindStringSubmatch(line)
 		if len(lineRegex) == 3 {
@@ -86,11 +88,19 @@ func GetUserApps() (Apps, error) {
 			cmd.Stdout = &out
 			err := cmd.Run()
 			if err != nil {
-				return m, err
+				return nil, err
+			} else if !cmd.ProcessState.Exited() {
+				return nil, fmt.Errorf("Process hasn't exited")
+			} else if !cmd.ProcessState.Success() {
+				return nil, fmt.Errorf("Process failed")
 			}
-
-			re := regexp.MustCompile("application-label:'(.*)'")
-			label := re.FindStringSubmatch(out.String())[1]
+			var label string
+			if strings.Contains(out.String(), "not found") {
+				label = pkg
+			} else {
+				re := regexp.MustCompile("application-label:'(.*)'")
+				label = re.FindStringSubmatch(out.String())[1]
+			}
 
 			s := App{
 				Label: label,
